@@ -20,6 +20,10 @@ public class GalleryAnimalActivity extends AppCompatActivity {
         setContentView(R.layout.activity_gallery_animal);
         init();
         mapview();
+
+        // 18 tam hinh
+//        => so dong : 6
+//        => so cot : 3
     }
 
     private void init() {
@@ -38,13 +42,12 @@ public class GalleryAnimalActivity extends AppCompatActivity {
         }
         if (currentTime / 1000 <= 1){
             Toast.makeText(this, "Het thoi gian", Toast.LENGTH_SHORT).show();
-            finish();
         }else{
             countDownTimer = new CountDownTimer(currentTime,1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    currentTime = millisUntilFinished ;
-                    Log.d("BBB","Lon hon 1 " + currentTime + "");
+                    currentTime = millisUntilFinished;
+                    Log.d("BBB",currentTime + "");
                 }
                 @Override
                 public void onFinish() {
@@ -54,5 +57,6 @@ public class GalleryAnimalActivity extends AppCompatActivity {
             countDownTimer.start();
         }
     }
-
 }
+//
+//Anh thi  , lac huynh , Canh linh , Dong , Duc hung , quan

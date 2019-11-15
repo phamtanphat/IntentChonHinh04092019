@@ -2,8 +2,10 @@ package com.example.intentchonhinhanh04092019;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -12,15 +14,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Random;
+
 public class MainActivity extends AppCompatActivity {
 
     ImageButton imgPlay;
-    ImageView imgHinhGoc,imgHinhChon;
+    ImageView imgHinhGoc, imgHinhChon;
     TextView txtThoiGian;
     FrameLayout frameLayoutPlay;
     boolean isPlay = false;
-    long totalTime = 4000;
+    long totalTime = 6000;
     String[] arrayNameAnimals;
+    int hinhgoc = 0;
+    int Request_Code_Animal = 123;
+    long currentTime = 0;
+    CountDownTimer countDownTimer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,30 +60,75 @@ public class MainActivity extends AppCompatActivity {
                 startGame();
             }
         });
+        imgHinhChon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, GalleryAnimalActivity.class);
+                intent.putExtra("currentTime", currentTime);
+                countDownTimer.cancel();
+                startActivityForResult(intent, Request_Code_Animal);
+            }
+        });
     }
+
     private void mapview() {
         arrayNameAnimals = getResources().getStringArray(R.array.arrayAnimal);
     }
 
     private void startGame() {
         randomImageHinhGoc();
-        CountDownTimer countDownTimer = new CountDownTimer(totalTime,1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                txtThoiGian.setText("Time : " + millisUntilFinished / 1000);
-            }
-
-            @Override
-            public void onFinish() {
-                Toast.makeText(MainActivity.this, "Hết thời gian!!", Toast.LENGTH_SHORT).show();
-            }
-        };
-        countDownTimer.start();
+        runCountDown(0, 0);
     }
-    private void randomImageHinhGoc(){
-        int hinhgoc = getResources().
+
+    private void runCountDown(long time, int position) {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        if (position == 0) {
+            countDownTimer = new CountDownTimer(totalTime, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    currentTime = millisUntilFinished;
+                    txtThoiGian.setText("Time : " + currentTime / 1000);
+                }
+
+                @Override
+                public void onFinish() {
+                    Toast.makeText(MainActivity.this, "Hết thời gian!!", Toast.LENGTH_SHORT).show();
+                }
+            };
+            countDownTimer.start();
+
+        } else {
+            if (time <= 1) {
+                Toast.makeText(this, "Het thoi gian", Toast.LENGTH_SHORT).show();
+                txtThoiGian.setText("Time : " + 1);
+            } else {
+                countDownTimer = new CountDownTimer(time, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        currentTime = millisUntilFinished;
+                        txtThoiGian.setText("Time : " + currentTime / 1000);
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        Toast.makeText(MainActivity.this, "Hết thời gian!!", Toast.LENGTH_SHORT).show();
+                    }
+                };
+                countDownTimer.start();
+            }
+        }
+
+
+    }
+
+    private void randomImageHinhGoc() {
+        //Thay doi tat ca vi tri trong mang
+//        Collections.shuffle(Arrays.asList(arrayNameAnimals));
+        hinhgoc = getResources().
                 getIdentifier(
-                        arrayNameAnimals[5],
+                        arrayNameAnimals[new Random().nextInt(arrayNameAnimals.length)],
                         "drawable",
                         getPackageName());
         imgHinhGoc.setImageResource(hinhgoc);

@@ -2,6 +2,7 @@ package com.example.intentchonhinhanh04092019;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.media.Image;
@@ -49,16 +50,17 @@ public class GalleryAnimalActivity extends AppCompatActivity {
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.d("BBB",imageView.getTag().toString());
+                        Intent intent = new Intent();
+                        intent.putExtra("idhinhchon",Integer.parseInt(v.getTag().toString()));
+                        intent.putExtra("time",currentTime);
+                        setResult(RESULT_OK);
+                        finish();
                     }
                 });
                 tableRow.addView(imageView);
             }
             tableLayout.addView(tableRow);
         }
-
-
-
     }
 
     private void init() {
@@ -76,6 +78,8 @@ public class GalleryAnimalActivity extends AppCompatActivity {
             countDownTimer.cancel();
         }
         if (currentTime / 1000 <= 1){
+            setResult(RESULT_CANCELED);
+            finish();
             Toast.makeText(this, "Het thoi gian", Toast.LENGTH_SHORT).show();
         }else{
             countDownTimer = new CountDownTimer(currentTime,1000) {

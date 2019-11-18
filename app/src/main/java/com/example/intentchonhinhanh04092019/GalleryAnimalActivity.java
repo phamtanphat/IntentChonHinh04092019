@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -20,6 +21,9 @@ public class GalleryAnimalActivity extends AppCompatActivity {
     long currentTime = -1;
     CountDownTimer countDownTimer;
     TableLayout tableLayout;
+    int count = 0;
+    String nameImage = "";
+    int idHinh = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,11 +34,24 @@ public class GalleryAnimalActivity extends AppCompatActivity {
         // 18 tam hinh
 //        => so dong : 6 => tabrow
 //        => so cot : 3 => imageview
+//        int vitri = cot * sodonghientai + y(Cthuc tinh vi theo dong va cot)
         for (int i = 0 ; i < 6 ; i++){
             TableRow tableRow = new TableRow(this);
             for(int y = 0 ; y < 3 ; y++){
-                ImageView imageView = new ImageView(this);
-                imageView.setImageResource(R.drawable.bo);
+                final ImageView imageView = new ImageView(this);
+                // xac dinh id : 0 -17 : done
+                // lay ten theo id de tra ve file hinh
+                nameImage = arrayNameGalleryAnimals[count++];
+                idHinh = getResources().getIdentifier(nameImage,"drawable",getPackageName());
+                // truyen file hinh vao image
+                imageView.setImageResource(idHinh);
+                imageView.setTag(idHinh);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d("BBB",imageView.getTag().toString());
+                    }
+                });
                 tableRow.addView(imageView);
             }
             tableLayout.addView(tableRow);
@@ -65,7 +82,6 @@ public class GalleryAnimalActivity extends AppCompatActivity {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     currentTime = millisUntilFinished;
-                    Log.d("BBB",currentTime + "");
                 }
                 @Override
                 public void onFinish() {

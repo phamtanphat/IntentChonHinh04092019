@@ -16,6 +16,9 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 public class GalleryAnimalActivity extends AppCompatActivity {
 
     String[] arrayNameGalleryAnimals;
@@ -36,6 +39,7 @@ public class GalleryAnimalActivity extends AppCompatActivity {
 //        => so dong : 6 => tabrow
 //        => so cot : 3 => imageview
 //        int vitri = cot * sodonghientai + y(Cthuc tinh vi theo dong va cot)
+
         for (int i = 0 ; i < 6 ; i++){
             TableRow tableRow = new TableRow(this);
             for(int y = 0 ; y < 3 ; y++){
@@ -53,7 +57,9 @@ public class GalleryAnimalActivity extends AppCompatActivity {
                         Intent intent = new Intent();
                         intent.putExtra("idhinhchon",Integer.parseInt(v.getTag().toString()));
                         intent.putExtra("time",currentTime);
-                        setResult(RESULT_OK);
+                        setResult(RESULT_OK,intent);
+                        countDownTimer.cancel();
+                        countDownTimer = null;
                         finish();
                     }
                 });
@@ -70,6 +76,7 @@ public class GalleryAnimalActivity extends AppCompatActivity {
 
     private void mapview() {
         arrayNameGalleryAnimals = getResources().getStringArray(R.array.arrayAnimal);
+        Collections.shuffle(Arrays.asList(arrayNameGalleryAnimals));
         Intent intent = getIntent();
         currentTime = intent.getLongExtra("currentTime", -1);
         runCountDown();
@@ -80,7 +87,7 @@ public class GalleryAnimalActivity extends AppCompatActivity {
         if (currentTime / 1000 <= 1){
             setResult(RESULT_CANCELED);
             finish();
-            Toast.makeText(this, "Het thoi gian", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Hết thời gian!!", Toast.LENGTH_SHORT).show();
         }else{
             countDownTimer = new CountDownTimer(currentTime,1000) {
                 @Override
@@ -89,6 +96,8 @@ public class GalleryAnimalActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onFinish() {
+                    setResult(RESULT_CANCELED);
+                    finish();
                     Toast.makeText(GalleryAnimalActivity.this, "Hết thời gian!!", Toast.LENGTH_SHORT).show();
                 }
             };

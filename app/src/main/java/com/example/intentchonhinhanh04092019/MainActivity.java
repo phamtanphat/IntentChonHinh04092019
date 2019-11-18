@@ -1,5 +1,6 @@
 package com.example.intentchonhinhanh04092019;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 isPlay = true;
                 frameLayoutPlay.setVisibility(View.GONE);
-                startGame();
+                startGame(0);
             }
         });
         imgHinhChon.setOnClickListener(new View.OnClickListener() {
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, GalleryAnimalActivity.class);
                 intent.putExtra("currentTime", currentTime);
                 countDownTimer.cancel();
+                countDownTimer = null;
                 startActivityForResult(intent, Request_Code_Animal);
             }
         });
@@ -75,9 +77,13 @@ public class MainActivity extends AppCompatActivity {
         arrayNameAnimals = getResources().getStringArray(R.array.arrayAnimal);
     }
 
-    private void startGame() {
+    private void startGame(long totalTime) {
         randomImageHinhGoc();
-        runCountDown(0, 0);
+        if (totalTime == 0){
+            runCountDown(0, 0);
+        }else{
+            runCountDown(totalTime, 0);
+        }
     }
 
     private void runCountDown(long time, int position) {
@@ -132,5 +138,31 @@ public class MainActivity extends AppCompatActivity {
                         "drawable",
                         getPackageName());
         imgHinhGoc.setImageResource(hinhgoc);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Request_Code_Animal && resultCode == RESULT_OK && data != null){
+            int idHinhChon = data.getIntExtra("idhinhchon",-1);
+            imgHinhChon.setImageResource(idHinhChon);
+            currentTime = data.getLongExtra("time",-1);
+            runCountDown(currentTime,1);
+            if (idHinhChon == hinhgoc){
+                Toast.makeText(this, "Chinh xac", Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startGame(totalTime);
+                    }
+                },1000);
+            }else{
+                Toast.makeText(this, "Sai roi", Toast.LENGTH_SHORT).show();
+            }
+        }
+        if (requestCode == Request_Code_Animal && resultCode == RESULT_CANCELED){
+            Toast.makeText(this, "Sai roi", Toast.LENGTH_SHORT).show();
+        }
+
     }
 }
